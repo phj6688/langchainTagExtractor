@@ -49,10 +49,13 @@ class ParallelExtractor:
         self.extractor = Extractor(config)
 
     def extract_info_parallel(self, texts: List[str]) -> List[ArticleBodyInfo]:
-        """Extracts information from multiple texts in parallel."""
+        """Extracts information from multiple texts in parallel, maintaining input order."""
         parallel_config = self.config.parallel_processing
         method = parallel_config.get('method', 'thread')
         workers = parallel_config.get('workers', 4)
+
+        # Initialize results list with None values
+        results = [None] * len(texts)
 
         if method == 'thread':
             executor_class = ThreadPoolExecutor
@@ -62,16 +65,23 @@ class ParallelExtractor:
             raise ValueError(f"Invalid parallel processing method: {method}")
 
         with executor_class(max_workers=workers) as executor:
-            futures = [executor.submit(self.extractor.extract_info, text) for text in texts]
-            results = []
-            for future in as_completed(futures):
+            # Submit tasks with index tracking
+            future_to_index = {
+                executor.submit(self.extractor.extract_info, text): i 
+                for i, text in enumerate(texts)
+            }
+
+            # Process results in order of completion
+            for future in as_completed(future_to_index):
+                idx = future_to_index[future]
                 try:
                     result = future.result()
-                    results.append(result)
+                    results[idx] = result
                 except Exception as e:
-                    logger.error(f"Error in parallel extraction: {e}")
+                    logger.error(f"Error in parallel extraction for index {idx}: {e}")
 
-        return results
+        # Remove any None values (failed extractions)
+        return [r for r in results if r is not None]
 
 def create_extractor(config_path: str, parallel: bool = False) -> Union[Extractor, ParallelExtractor]:
     """Factory function to create an Extractor or ParallelExtractor instance."""

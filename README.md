@@ -16,9 +16,14 @@ LangChain Tag Extractor is a Python-based tool designed to extract relevant info
 - Dependencies: langchain, pydantic, PyYAML, python-dotenv
 
 ## Installation
+### From Source
 1. Clone the repository
-2. Install dependencies: `pip install -r requirements.txt`
+2. Install in development mode:
+```bash
+pip install -e .
+```
 3. Set up your OpenAI API key in a `.env` file
+
 
 ## Configuration
 Adjust the `config.yaml` file to customize:
@@ -27,12 +32,17 @@ Adjust the `config.yaml` file to customize:
 - Parallel processing options
 - Prompt template (not recommended to change)
 
+
 ## Usage
 ```python
-from langchainTagExtractor.extractor import create_extractor
+from langchain_tag_extractor import create_extractor
+from langchain_tag_extractor.helper import get_default_config_path
 
-config_path = "path/to/config.yaml"
-extractor = create_extractor(config_path, parallel=True)
+# Using default configuration
+extractor = create_extractor(get_default_config_path())
+
+# Or using custom configuration
+extractor = create_extractor("path/to/custom/config.yaml", parallel=True)
 
 # Single extraction
 result = extractor.extract_info("Article text here")

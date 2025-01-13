@@ -1,9 +1,6 @@
 n_tags: 
   10
 
-base_dir: 
-  /Users/peyman/local/projects/temp_files/langchainTagExtractor
-
 llm:
   openai: True
   #False
@@ -14,7 +11,7 @@ llm:
 
 parallel_processing:
   enabled: True
-  method: process  # or 'process'
+  method: thread  # or 'process'
   workers: 4
 
 template: |

@@ -2,6 +2,10 @@ import logging
 from typing import List, Dict, Any
 from pydantic import BaseModel, Field
 import yaml
+import os
+import pkg_resources
+
+
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -12,8 +16,13 @@ class Config(BaseModel):
     n_tags: int
     llm: Dict[str, Any]
     template: str
-    base_dir: str
-    parallel_processing: Dict[str, Any] = Field(default_factory=lambda: {"enabled": False, "method": "thread", "workers": 4})
+    parallel_processing: Dict[str, Any] = Field(
+        default_factory=lambda: {
+            "enabled": False,
+              "method": "thread",
+                "workers": 4
+        }
+    )
 
     @classmethod
     def load_config(cls, file_path: str) -> 'Config':
@@ -38,3 +47,7 @@ class ArticleBodyInfo(BaseModel):
     language: str = Field(..., enum=SUPPORTED_LANGUAGES, description="Language of the Article")
     tags: List[str] = Field(..., description="Tags extracted from the Article")
     summary: str = Field(..., description="Summary of the Article")
+
+def get_default_config_path():
+    """Returns the path to the default config file included with the package."""
+    return pkg_resources.resource_filename('langchain_tag_extractor', 'config.yaml')
