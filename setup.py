@@ -8,9 +8,9 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="langchain-tag-extractor",
-    version="0.1.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    version="0.2.0",
+    author="Peyman",
+    author_email="me@peyman.io",
     description="A tool to extract tags, sentiment, and language from news articles using LLMs",
     long_description=long_description,
     long_description_content_type="text/markdown",

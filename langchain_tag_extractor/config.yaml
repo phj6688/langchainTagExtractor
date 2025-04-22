@@ -12,7 +12,7 @@ llm:
 parallel_processing:
   enabled: True
   method: thread  # or 'process'
-  workers: 4
+  workers: 10
 
 template: |
   # IDENTITY and PURPOSE
@@ -27,7 +27,9 @@ template: |
 
   - Identify the main topics, themes, and key elements of the article.
 
-  - Extract exactly {n_tags} relevant and concise tags from the article.
+  - Select appropriate topics and subtopics ONLY from the provided predefined lists below. Do not create new tags.
+
+  - Select half of your tags from the TOPICS list and half from the SUBTOPICS list. If {n_tags} is odd, use one more topic than subtopic.
 
   - Determine the overall sentiment of the article (happy, neutral, or sad).
 
@@ -39,6 +41,14 @@ template: |
 
   - Format the output according to the specified structure.
 
+  # PREDEFINED TAG LISTS
+
+  ## TOPICS (Main categories - select from these only)
+  Agriculture & Farming, Architecture & Design, Artificial Intelligence & Machine Learning, Arts & Culture, Automotive & Transportation, Aviation & Aerospace, Blockchain & Cryptocurrency, Business & Management, Career & Professional Development, Climate & Energy, Community & Local News, Communication & Social Media, Consumer Protection & Advocacy, Cybersecurity & Information Security, Data Science & Analytics, Economics & Global Markets, EdTech (Education Technology), Education & Academics, E-commerce & Retail, Entertainment & Media, Entrepreneurship & Startups, Environment & Sustainability, Family & Parenting, Finance & Investing, Food & Culinary, Gaming & Esports, Government & Politics, Health & Wellness, History & Heritage, International Relations & Geopolitics, Journalism & Media Analysis, Law & Legal Affairs, Lifestyle & Fashion, Marketing & Advertising, Medicine & Healthcare, Music & Performing Arts, Outdoor & Adventure, Personal Development & Self-Help, Programming & Software Development, Public Policy & Administration, Real Estate & Housing, Religion & Spirituality, Science & Research, Space & Astronomy, Security & Defense, Society & Social Issues, Sports & Athletics, Technology & Innovation, Travel & Tourism, Writing & Publishing
+
+  ## SUBTOPICS (More specific categories - select from these only)
+  Market Analysis & Trends, International Business & Trade, Digital Transformation & Innovation, Financial Markets & Investing, Economic Policies & Reforms, Public Health & Healthcare, Disease Control & Research, Mental Health & Wellbeing, Local News & Community Issues, Crime & Public Safety, Government Policies & Public Administration, International Relations & Diplomacy, Geopolitics & Global Affairs, Elections & Political Analysis, Public Policy & Legislation, Civil Rights & Social Justice, Human Rights & Activism, Education & Academia, Higher Education & Student Life, Science & Research Breakthroughs, Climate Change & Environmental Issues, Energy & Sustainability, Agriculture & Farming Practices, Technology & Hi-Tech Developments, Artificial Intelligence & Machine Learning, Programming & Software Development, Cybersecurity & Data Protection, Digital Marketing & E-commerce, Social Media & Communication, Consumer Electronics & Gadgets, Open Source Software, Cloud Computing & Virtualization, Mobile Technology & Apps, Data Science & Analytics, Fintech & Cryptocurrency, Blockchain & Decentralized Finance, Automotive & Electric Vehicles, Aviation & Aerospace, Defense & Security Studies, Humanities & Cultural Studies, Art & Exhibitions, Music & Performing Arts, Film & Television, Literature & Publishing, Pop Culture & Entertainment, Lifestyle & Fashion, Food & Culinary Arts, Travel & Tourism, Hospitality & Leisure, Sports & Athletics, Team Sports & Leagues, Adventure & Outdoor Activities
+
   # OUTPUT INSTRUCTIONS
 
   - Only output Markdown.
@@ -49,12 +59,17 @@ template: |
     (
       "sentiment": "happy" | "neutral" | "sad",
       "language": "<language from supported_languages>",
-      "tags": ["<tag1>", "<tag2>", ..., "<tag{n_tags}>"],
+      "tags": {{
+        "topics": ["<topic1>", "<topic2>", ...],
+        "subtopics": ["<subtopic1>", "<subtopic2>", ...]
+      }},
       "summary": "<brief summary of the article>"
     )
     ```
 
-  - Ensure that exactly {n_tags} tags are provided.
+  - Ensure that you select a total of {n_tags} tags, divided between topics and subtopics.
+  
+  - Only use tags from the predefined TOPICS and SUBTOPICS lists above. Do not create new tags.
 
   - The sentiment must be one of the three specified options: happy, neutral, or sad.
 

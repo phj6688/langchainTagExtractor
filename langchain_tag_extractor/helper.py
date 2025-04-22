@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 import yaml
 import os
 import pkg_resources
-
+from .unique_values import topics, subtopics
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -42,10 +42,19 @@ class Config(BaseModel):
             logger.error(f"Failed to load config: {e}")
             raise
 
+
+topics_list = topics
+subtopics_list = subtopics
+
+
+class Tags(BaseModel):
+    topics: List[str] = Field(...,enum=topics_list, description="List of topics extracted from the Article")
+    subtopics: List[str] = Field(..., enum=subtopics_list, description="List of subtopics extracted from the Article")
+
 class ArticleBodyInfo(BaseModel):
     sentiment: str = Field(..., enum=['happy', 'neutral', 'sad'], description="Sentiment of the Article")
     language: str = Field(..., enum=SUPPORTED_LANGUAGES, description="Language of the Article")
-    tags: List[str] = Field(..., description="Tags extracted from the Article")
+    tags: Tags = Field(..., description="Tags extracted from the Article")
     summary: str = Field(..., description="Summary of the Article")
 
 def get_default_config_path():
