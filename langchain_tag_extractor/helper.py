@@ -10,8 +10,38 @@ from .unique_values import topics, subtopics
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-SUPPORTED_LANGUAGES = ['english', 'deutsch', 'french']
-
+SUPPORTED_LANGUAGES = [
+    "English",
+    "Chinese",
+    "Spanish",
+    "German",
+    "French",
+    "Russian",
+    "Portuguese",
+    "Japanese",
+    "Italian",
+    "Turkish",
+    "Polish",
+    "Dutch",
+    "Arabic",
+    "Korean",
+    "Vietnamese",
+    "Farsi",
+    "Ukrainian",
+    "Hindi",
+    "Thai",
+    "Czech",
+    "Romanian",
+    "Swedish",
+    "Hebrew",
+    "Hungarian",
+    "Finnish",
+    "Greek",
+    "Indonesian",
+    "Danish",
+    "Norwegian",
+    "Slovak"
+]
 class Config(BaseModel):
     n_tags: int
     llm: Dict[str, Any]
